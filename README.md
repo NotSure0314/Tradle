@@ -1,4 +1,4 @@
-# 📈 Tradle Cursor
+# 📈 Tradle
 
 > **Read the chart. Call the move.** 🎯
 
@@ -110,9 +110,9 @@ src/
 ---
 
 <div align="center">
-  <p><strong>📈 Tradle Cursor</strong> — <em>Sharpen your market instincts.</em></p>
+  <p><strong>📈 Tradle</strong> — <em>Sharpen your market instincts.</em></p>
   <p>
     <a href="https://github.com/NotSure0314/Tradle">GitHub</a> •
-    <a href="#-tradle-cursor">Back to top ↑</a>
+    <a href="#-tradle">Back to top ↑</a>
   </p>
 </div>

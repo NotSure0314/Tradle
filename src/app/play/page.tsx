@@ -13,7 +13,7 @@ export default function PlayPage() {
             </svg>
           </div>
           <span className="text-sm font-semibold tracking-tight text-white">
-            Tradle <span className="text-violet-300">Cursor</span>
+            Tradle
           </span>
         </Link>
       </header>

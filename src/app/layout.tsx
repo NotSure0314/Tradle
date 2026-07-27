@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tradle Cursor — Daily Trading Puzzle",
+  title: "Tradle — Daily Trading Puzzle",
   description:
     "Sharpen your market instincts. Predict price movements on real charts and climb the leaderboard.",
 };

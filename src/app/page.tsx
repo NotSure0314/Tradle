@@ -62,7 +62,7 @@ export default function Home() {
             </svg>
           </div>
           <span className="text-sm font-semibold tracking-tight text-white">
-            Tradle <span className="text-violet-300">Cursor</span>
+            Tradle
           </span>
         </div>
         <span className="badge hidden sm:inline-flex">Daily Challenge</span>
