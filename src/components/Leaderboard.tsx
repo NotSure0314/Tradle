@@ -27,7 +27,7 @@ export default function Leaderboard({ currentScore }: Props) {
         : await getAllTimeLeaderboard();
       setEntries(data);
     })();
-  }, [tab]);
+  }, [tab, currentScore]);
 
   return (
     <div className="glass-card p-6 space-y-5">

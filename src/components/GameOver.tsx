@@ -22,7 +22,7 @@ export default function GameOver({ results, onPlayAgain }: Props) {
     const entry = { score: totalScore, date: today };
     addDailyScore(today, entry);
     addAllTimeScore(entry);
-  }, [totalScore]);
+  }, [totalScore, results]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-up">
