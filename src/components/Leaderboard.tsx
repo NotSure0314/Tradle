@@ -21,10 +21,12 @@ export default function Leaderboard({ currentScore }: Props) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    const data = tab === "daily"
-      ? getDailyLeaderboard(nyDateKey())
-      : getAllTimeLeaderboard();
-    setEntries(data);
+    (async () => {
+      const data = tab === "daily"
+        ? await getDailyLeaderboard(nyDateKey())
+        : await getAllTimeLeaderboard();
+      setEntries(data);
+    })();
   }, [tab]);
 
   return (

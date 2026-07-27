@@ -19,7 +19,7 @@ export default function GameOver({ results, onPlayAgain }: Props) {
 
   useEffect(() => {
     const today = nyDateKey();
-    const entry = { score: totalScore, date: today, timestamp: Date.now() };
+    const entry = { score: totalScore, date: today };
     addDailyScore(today, entry);
     addAllTimeScore(entry);
   }, [totalScore]);

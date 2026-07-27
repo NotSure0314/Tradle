@@ -1,44 +1,35 @@
+import { supabase } from "./supabase";
+
 export type LeaderboardEntry = {
   score: number;
   date: string;
-  timestamp: number;
 };
 
-const DAILY_PREFIX = "tradle:daily:";
-const ALL_TIME_KEY = "tradle:alltime";
+export async function getDailyLeaderboard(date: string): Promise<LeaderboardEntry[]> {
+  const { data } = await supabase
+    .from("scores")
+    .select("score, date")
+    .eq("date", date)
+    .order("score", { ascending: false })
+    .limit(100);
 
-export function getDailyLeaderboard(date: string): LeaderboardEntry[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(`${DAILY_PREFIX}${date}`);
-    return raw ? (JSON.parse(raw) as LeaderboardEntry[]) : [];
-  } catch {
-    return [];
-  }
+  return (data as LeaderboardEntry[]) ?? [];
 }
 
-export function addDailyScore(date: string, entry: LeaderboardEntry): void {
-  if (typeof window === "undefined") return;
-  const board = getDailyLeaderboard(date);
-  board.push(entry);
-  board.sort((a, b) => b.score - a.score);
-  localStorage.setItem(`${DAILY_PREFIX}${date}`, JSON.stringify(board.slice(0, 100)));
+export async function addDailyScore(date: string, entry: LeaderboardEntry): Promise<void> {
+  await supabase.from("scores").insert({ score: entry.score, date });
 }
 
-export function getAllTimeLeaderboard(): LeaderboardEntry[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(ALL_TIME_KEY);
-    return raw ? (JSON.parse(raw) as LeaderboardEntry[]) : [];
-  } catch {
-    return [];
-  }
+export async function getAllTimeLeaderboard(): Promise<LeaderboardEntry[]> {
+  const { data } = await supabase
+    .from("scores")
+    .select("score, date")
+    .order("score", { ascending: false })
+    .limit(100);
+
+  return (data as LeaderboardEntry[]) ?? [];
 }
 
-export function addAllTimeScore(entry: LeaderboardEntry): void {
-  if (typeof window === "undefined") return;
-  const board = getAllTimeLeaderboard();
-  board.push(entry);
-  board.sort((a, b) => b.score - a.score);
-  localStorage.setItem(ALL_TIME_KEY, JSON.stringify(board.slice(0, 100)));
+export async function addAllTimeScore(entry: LeaderboardEntry): Promise<void> {
+  await addDailyScore(entry.date, entry);
 }
