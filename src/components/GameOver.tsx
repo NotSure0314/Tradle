@@ -3,7 +3,7 @@
 import type { RoundResult } from "@/lib/types";
 import { formatScore } from "@/lib/scoring";
 import { useEffect } from "react";
-import { addDailyScore, addAllTimeScore } from "@/lib/storage";
+import { addDailyScore } from "@/lib/storage";
 import { nyDateKey } from "@/lib/date";
 import Leaderboard from "./Leaderboard";
 
@@ -21,7 +21,6 @@ export default function GameOver({ results, onPlayAgain }: Props) {
     const today = nyDateKey();
     const entry = { score: totalScore, date: today };
     addDailyScore(today, entry);
-    addAllTimeScore(entry);
   }, [totalScore, results]);
 
   return (
