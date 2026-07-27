@@ -1,0 +1,14 @@
+[
+  "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA",
+  "SPY", "QQQ", "IWM", "DIA",
+  "JPM", "V", "MA", "BAC", "WFC",
+  "JNJ", "UNH", "PFE", "ABBV", "MRK",
+  "XOM", "CVX", "COP", "SLB",
+  "KO", "PEP", "WMT", "COST", "MCD",
+  "DIS", "NFLX", "CMCSA",
+  "CRM", "ADBE", "ORCL", "IBM", "AMD",
+  "INTC", "CSCO", "QCOM", "TXN",
+  "NKE", "SBUX", "TGT", "LOW", "HD",
+  "BA", "CAT", "GE", "MMM", "HON",
+  "BTC-USD", "ETH-USD", "SOL-USD"
+]
