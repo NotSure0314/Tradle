@@ -51,7 +51,7 @@ export default function UserMenu() {
         <Link href="/login" className="btn-ghost text-sm">
           Log in
         </Link>
-        <Link href="/signup" className="btn-primary text-sm px-4 py-2">
+        <Link href="/signup" className="btn-primary text-sm !py-2.5 !px-4 !rounded-lg font-medium">
           Sign up
         </Link>
       </div>
