@@ -53,18 +53,7 @@ const features = [
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto w-full">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-400 flex items-center justify-center shadow-lg shadow-violet-500/20">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 3v18h18" />
-              <path d="m19 9-5 5-4-4-3 3" />
-            </svg>
-          </div>
-          <span className="text-sm font-semibold tracking-tight text-white">
-            Tradle
-          </span>
-        </div>
+      <header className="flex items-center justify-center px-6 py-5 max-w-6xl mx-auto w-full">
         <span className="badge hidden sm:inline-flex">Daily Challenge</span>
       </header>
 
