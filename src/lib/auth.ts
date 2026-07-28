@@ -29,9 +29,11 @@ export async function signUp(
   const userId = data.user?.id;
   if (!userId) return { error: { message: "Sign up failed" } };
 
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .insert({ id: userId, username, email });
+  const { error: profileError } = await supabase.rpc("create_profile", {
+    user_id: userId,
+    user_username: username,
+    user_email: email,
+  });
 
   if (profileError) return { error: profileError };
 
