@@ -7,7 +7,6 @@ import { formatScore } from "@/lib/scoring";
 
 type Props = {
   currentScore?: number;
-  guestName?: string | null;
 };
 
 function rankLabel(index: number) {
@@ -17,7 +16,7 @@ function rankLabel(index: number) {
   return `${index + 1}th`;
 }
 
-export default function Leaderboard({ currentScore, guestName }: Props) {
+export default function Leaderboard({ currentScore }: Props) {
   const [tab, setTab] = useState<"daily" | "alltime">("daily");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
 
@@ -87,7 +86,7 @@ export default function Leaderboard({ currentScore, guestName }: Props) {
                 </span>
                 {isCurrent && (
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-400">
-                    {guestName ?? "You"}
+                    You
                   </span>
                 )}
               </div>

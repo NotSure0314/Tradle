@@ -2,9 +2,8 @@
 
 import type { RoundResult } from "@/lib/types";
 import { formatScore } from "@/lib/scoring";
-import { useEffect, useState } from "react";
-import { addDailyScore, saveGuestScore } from "@/lib/storage";
-import { getUser, generateGuestName } from "@/lib/auth";
+import { useEffect } from "react";
+import { addDailyScore } from "@/lib/storage";
 import { nyDateKey } from "@/lib/date";
 import Leaderboard from "./Leaderboard";
 
@@ -17,18 +16,11 @@ export default function GameOver({ results, onPlayAgain }: Props) {
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
   const totalFormatted = formatScore(totalScore);
   const correctDirections = results.filter((r) => r.breakdown.dirOk).length;
-  const [guestName, setGuestName] = useState<string | null>(null);
 
   useEffect(() => {
     const today = nyDateKey();
-    getUser().then((user) => {
-      if (user) {
-        addDailyScore(today, { score: totalScore, date: today });
-      } else {
-        saveGuestScore(totalScore, today);
-        setGuestName(generateGuestName());
-      }
-    });
+    const entry = { score: totalScore, date: today };
+    addDailyScore(today, entry);
   }, [totalScore, results]);
 
   return (
@@ -79,7 +71,7 @@ export default function GameOver({ results, onPlayAgain }: Props) {
         </div>
       </div>
 
-      <Leaderboard currentScore={totalScore} guestName={guestName} />
+      <Leaderboard currentScore={totalScore} />
 
       <button onClick={onPlayAgain} className="btn-primary w-full">
         Play Again
