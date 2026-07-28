@@ -39,7 +39,7 @@ export default function AuthForm({ mode }: Props) {
     if (result.error) {
       setError(result.error.message);
     } else {
-      router.push("/");
+      window.location.href = "/";
     }
   }
 

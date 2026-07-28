@@ -44,14 +44,18 @@ export async function signIn(identifier: string, password: string) {
   let email = identifier;
 
   if (!identifier.includes("@")) {
-    const { data } = await supabase
+    const { data, error: lookupError } = await supabase
       .from("profiles")
       .select("email")
       .eq("username", identifier)
       .maybeSingle();
 
-    if (!data?.email) {
-      return { error: { message: "User not found" } };
+    if (lookupError) {
+      return { error: { message: "Login failed" } };
+    }
+
+    if (!data || !data.email || data.email.trim() === "") {
+      return { error: { message: "Username not found" } };
     }
     email = data.email;
   }
