@@ -47,9 +47,14 @@ export default function UserMenu() {
 
   if (!profile) {
     return (
-      <Link href="/login" className="btn-ghost text-sm">
-        Log in
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link href="/login" className="btn-ghost text-sm">
+          Log in
+        </Link>
+        <Link href="/signup" className="btn-primary text-sm px-4 py-2">
+          Sign up
+        </Link>
+      </div>
     );
   }
 
