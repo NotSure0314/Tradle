@@ -17,9 +17,11 @@ export default function UserMenu() {
     (async () => {
       setLoading(true);
       const user = await getUser();
+      console.log("UserMenu auth check:", user ? `logged in as ${user.id}` : "not logged in");
       if (cancelled) return;
       if (user) {
         const p = await getProfile(user.id);
+        console.log("UserMenu profile:", p);
         if (!cancelled) setProfile(p);
       } else {
         if (!cancelled) setProfile(null);
