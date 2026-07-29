@@ -29,9 +29,11 @@ export async function signUp(
   const userId = data.user?.id;
   if (!userId) return { error: { message: "Sign up failed" } };
 
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .insert({ id: userId, username, email });
+  const { error: profileError } = await supabase.rpc("create_profile", {
+    user_id: userId,
+    user_username: username,
+    user_email: email,
+  });
 
   if (profileError) return { error: profileError };
 
@@ -44,14 +46,19 @@ export async function signIn(identifier: string, password: string) {
   let email = identifier;
 
   if (!identifier.includes("@")) {
-    const { data } = await supabase
+    const { data, error: lookupError } = await supabase
       .from("profiles")
       .select("email")
       .eq("username", identifier)
       .maybeSingle();
 
-    if (!data?.email) {
-      return { error: { message: "User not found" } };
+    if (lookupError) {
+      console.error("Username lookup error:", lookupError);
+      return { error: { message: "Login failed: " + lookupError.message } };
+    }
+
+    if (!data || !data.email || data.email.trim() === "") {
+      return { error: { message: "Username not found" } };
     }
     email = data.email;
   }
@@ -67,17 +74,6 @@ export async function signIn(identifier: string, password: string) {
   if (userId) await transferGuestScores(userId);
 
   return { error: null };
-}
-
-export async function signInWithOAuth(
-  provider: "google" | "github",
-) {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: { redirectTo: `${window.location.origin}/auth/callback` },
-  });
-
-  return { error };
 }
 
 export async function signOut() {
