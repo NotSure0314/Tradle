@@ -76,17 +76,6 @@ export async function signIn(identifier: string, password: string) {
   return { error: null };
 }
 
-export async function signInWithOAuth(
-  provider: "google" | "github",
-) {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: { redirectTo: `${window.location.origin}/auth/callback` },
-  });
-
-  return { error };
-}
-
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   return { error };
