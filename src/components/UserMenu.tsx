@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getUser, getProfile, signOut, type Profile } from "@/lib/auth";
 
 export default function UserMenu() {
@@ -9,20 +10,24 @@ export default function UserMenu() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      setLoading(true);
       const user = await getUser();
       if (cancelled) return;
       if (user) {
         const p = await getProfile(user.id);
         if (!cancelled) setProfile(p);
+      } else {
+        if (!cancelled) setProfile(null);
       }
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [pathname]);
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
