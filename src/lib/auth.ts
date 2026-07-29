@@ -53,7 +53,8 @@ export async function signIn(identifier: string, password: string) {
       .maybeSingle();
 
     if (lookupError) {
-      return { error: { message: "Login failed" } };
+      console.error("Username lookup error:", lookupError);
+      return { error: { message: "Login failed: " + lookupError.message } };
     }
 
     if (!data || !data.email || data.email.trim() === "") {
