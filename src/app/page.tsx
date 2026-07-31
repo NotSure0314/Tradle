@@ -66,7 +66,6 @@ export default function Home() {
             Tradle
           </span>
         </div>
-        <span className="badge hidden sm:inline-flex">Daily Challenge</span>
         <UserMenu />
       </header>
 
