@@ -1,6 +1,5 @@
 import Link from "next/link";
 import GameClient from "@/components/GameClient";
-import UserMenu from "@/components/UserMenu";
 
 export default function PlayPage() {
   return (
@@ -17,7 +16,6 @@ export default function PlayPage() {
             Tradle
           </span>
         </Link>
-        <UserMenu />
       </header>
 
       <div className="px-4 sm:px-6 pb-10">
