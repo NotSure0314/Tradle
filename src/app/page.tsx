@@ -1,4 +1,5 @@
 import Link from "next/link";
+import UserMenu from "@/components/UserMenu";
 
 const features = [
   {
@@ -66,6 +67,7 @@ export default function Home() {
           </span>
         </div>
         <span className="badge hidden sm:inline-flex">Daily Challenge</span>
+        <UserMenu />
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-16">
