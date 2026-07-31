@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   title: "Tradle — Daily Trading Puzzle",
   description:
     "Sharpen your market instincts. Predict price movements on real charts and climb the leaderboard.",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

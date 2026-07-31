@@ -53,10 +53,6 @@ const features = [
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-center px-6 py-5 max-w-6xl mx-auto w-full">
-        <span className="badge hidden sm:inline-flex">Daily Challenge</span>
-      </header>
-
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-16">
         <div className="max-w-2xl w-full text-center space-y-10 animate-fade-up">
           <div className="space-y-5">
