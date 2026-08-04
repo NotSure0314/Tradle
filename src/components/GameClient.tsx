@@ -160,7 +160,7 @@ export default function GameClient() {
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="chart-wrapper">
         <ChartToolbar
           activeTool={activeTool}
           onSelectTool={setActiveTool}

@@ -61,7 +61,7 @@ export default function ChartToolbar({ activeTool, onSelectTool, onDelete, onInd
   const [showIndicators, setShowIndicators] = useState(false);
 
   return (
-    <div className="relative flex flex-col items-center gap-0.5 p-1 rounded-lg bg-[#1a1a2e] border border-white/[0.06]">
+    <div className="chart-toolbar">
       <ToolButton icon={<CrosshairIcon />} label="Crosshair" active={activeTool === "crosshair"} onClick={() => onSelectTool("crosshair")} />
       <Divider />
       <ToolButton icon={<TrendlineIcon />} label="Trend Line" active={activeTool === "trendline"} onClick={() => onSelectTool("trendline")} />
