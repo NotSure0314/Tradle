@@ -97,8 +97,19 @@ export default function PuzzleChart({
     };
     window.addEventListener("resize", handleResize);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const selected = drawingManagerRef.current?.getSelectedDrawing();
+        if (selected) {
+          drawingManagerRef.current?.removeDrawing(selected.id);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("keydown", handleKeyDown);
       indicatorSeriesRef.current.forEach((s) => {
         try { chart.removeSeries(s); } catch {}
       });
