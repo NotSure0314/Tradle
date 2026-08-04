@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { VisiblePuzzle, RoundResult as RoundResultType, DailySetPublic } from "@/lib/types";
 import { scoreRound } from "@/lib/scoring";
 import PuzzleChart from "./PuzzleChart";
+import type { PuzzleChartHandle } from "./PuzzleChart";
 import ChartToolbar from "./ChartToolbar";
 import PredictionInput from "./PredictionInput";
 import RoundResult from "./RoundResult";
@@ -23,6 +24,7 @@ export default function GameClient() {
   const [roundKey, setRoundKey] = useState(0);
   const [activeTool, setActiveTool] = useState<DrawingTool>("crosshair");
   const [indicatorVersion, setIndicatorVersion] = useState(0);
+  const chartRef = useRef<PuzzleChartHandle>(null);
 
   const loadDailySet = useCallback(async () => {
     setState("loading");
@@ -162,11 +164,12 @@ export default function GameClient() {
         <ChartToolbar
           activeTool={activeTool}
           onSelectTool={setActiveTool}
-          onDelete={() => {}}
+          onDelete={() => chartRef.current?.deleteSelected()}
           onIndicatorChange={() => setIndicatorVersion((v) => v + 1)}
         />
         <div className="glass-card p-1 sm:p-1.5 flex-1">
           <PuzzleChart
+            ref={chartRef}
             candles={puzzle.visibleCandles}
             prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
             actual={state === "revealing" ? currentResult?.actualClose : undefined}

@@ -1,33 +1,17 @@
-# Task 5: AuthForm Component
+# Task 5 Report: Chart Toolbar Component
 
-**Status:** ✅ Complete
+**Status:** DONE
 
-## What Was Implemented
+**What was done:**
+Created `src/components/ChartToolbar.tsx` with:
+- `DrawingTool` type union of 13 drawing tool strings
+- SVG icon components for each tool (crosshair, trendline, ray, horizontal lines, channel, pitchfork, fibonacci, rectangle, text, brush, price range, magnet, delete, indicators)
+- `ToolButton` component with active state styling (violet highlight)
+- `Divider` component for visual separation
+- `ChartToolbar` component with vertical layout, tool selection, delete callback, and toggleable indicator panel
 
-Created `src/components/AuthForm.tsx` — a reusable login/signup form component.
+**Commit:** `dfc71a0` on branch `chart-tools`
 
-### Features
-- Accepts `mode: "login" | "signup"` prop to toggle between forms
-- **Login mode:** email/username + password fields
-- **Signup mode:** username + email + password fields
-- OAuth buttons (Google, GitHub) at the top using `signInWithOAuth`
-- Divider line with "or continue with email" text
-- Error display with red styling below the form
-- Switch link at bottom ("Don't have an account? Sign up" / "Already have an account? Sign in")
-- On submit: calls `signUp` or `signIn` from `@/lib/auth`, redirects to `/` on success
-- Username validation: 3-20 chars, alphanumeric + underscores only (`/^[a-zA-Z0-9_]{3,20}$/`)
-- Dark theme matching existing design (`.glass-card`, `.input-field`, `.btn-primary`, `.btn-ghost` classes)
+**Test results:** Build passed — `npm run build` compiled successfully with no type errors. All 9 pages generated.
 
-### Design Consistency
-- Uses existing CSS utility classes from `globals.css`
-- Matches component patterns: `"use client"`, default export, typed props
-- Follows existing dark theme conventions (zinc-400/500/600 text, violet accents, glass borders)
-
-## Test Results
-
-- `npm run build` — ✅ Compiled successfully, no TypeScript errors
-- No lint errors reported
-
-## Concerns
-
-- None. Component is fully typed, follows existing patterns, and builds cleanly.
+**Concerns:** None

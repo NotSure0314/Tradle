@@ -1,19 +1,16 @@
-# Task 4: Storage Updates
+# Task 4: IndicatorPanel Component
 
-**Status:** ✅ Complete
+## Status
+✅ Complete
 
-## Changes Made
+## Commit
+`8100cc7` feat: add indicator toggle panel component
 
-1. **`LeaderboardEntry` type** — Added optional `username?: string` field.
+## Test Summary
+`npm run build` passed — compiled and type-checked successfully, no errors.
 
-2. **`getDailyLeaderboard`** — Updated select to `score, date, profiles(username)` to join profiles for usernames.
+## Details
+Created `src/components/IndicatorPanel.tsx` — a flyout panel that lists 9 indicator toggles (SMA 20/50/200, EMA 12/26, Bollinger Bands, Volume, RSI, MACD). Each toggle writes to `indicatorStore` (localStorage-backed) and calls `onChange` to trigger chart re-render. Glass-card styling with green/grey dot indicators.
 
-3. **`getAllTimeLeaderboard`** — Same profiles join as daily leaderboard.
-
-4. **`addDailyScore`** — Now imports `getUser()` from auth.ts and includes `user_id` in the insert (falls back to `null` for unauthenticated saves).
-
-5. **`saveGuestScore(score, date)`** — New function that appends `{ score, date }` to `guest-scores` in localStorage, parsing existing data with proper validation.
-
-## Verification
-
-- `npm run build` — ✅ Compiled successfully, no TypeScript errors.
+## Concerns
+- None at this time. Component is a pure UI toggle; integration with the chart renderer depends on downstream tasks.

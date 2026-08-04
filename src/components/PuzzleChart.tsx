@@ -1,7 +1,7 @@
 // src/components/PuzzleChart.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import {
   createChart,
   CandlestickSeries,
@@ -33,9 +33,13 @@ type Props = {
 
 const ACCENT = "#8b5cf6";
 
-export default function PuzzleChart({
+export interface PuzzleChartHandle {
+  deleteSelected: () => void;
+}
+
+const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
   candles, prediction, actual, height = 500, roundKey, activeTool, indicatorVersion,
-}: Props) {
+}: Props, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
@@ -43,6 +47,17 @@ export default function PuzzleChart({
   const actualRef = useRef<ISeriesApi<"Line"> | null>(null);
   const drawingManagerRef = useRef<DrawingManager | null>(null);
   const indicatorSeriesRef = useRef<ISeriesApi<any>[]>([]);
+
+  useImperativeHandle(ref, () => ({
+    deleteSelected() {
+      const dm = drawingManagerRef.current;
+      if (!dm) return;
+      const selected = dm.getSelectedDrawing();
+      if (selected) {
+        dm.removeDrawing(selected.id);
+      }
+    },
+  }));
 
   // Create chart
   useEffect(() => {
@@ -268,4 +283,6 @@ export default function PuzzleChart({
   }, [actual, candles]);
 
   return <div ref={containerRef} className="chart-container" />;
-}
+});
+
+export default PuzzleChart;

@@ -1,16 +1,37 @@
-## Task 7: OAuth Callback Route
+# Task 7 Report: Add ChartToolbar to GameClient Layout
 
-**File created:** `src/app/auth/callback/route.ts`
+## Status: ✅ Complete
 
-### What was built
-- GET route handler at `/auth/callback` for Google/GitHub OAuth flows
-- Extracts `code` query parameter and exchanges it for a session via `supabase.auth.exchangeCodeForSession(code)`
-- Fetches authenticated user and creates a profile if one doesn't exist:
-  - `username` derived from `user.user_metadata.full_name` (lowercased, spaces→underscores) with fallback to `user_<first 8 chars of id>`
-  - `email` and `avatar_url` from user metadata
-- Transfers guest scores from localStorage to the authenticated account (same logic as `transferGuestScores` in `auth.ts`), with try-catch guards for server-side safety
-- Redirects to `/` on success or error
+## Commit
+- `4adbcd8` - feat: add ChartToolbar to GameClient layout
 
-### Verification
-- `npm run build` passes with no TypeScript or compilation errors
-- Route appears in build output as `ƒ /auth/callback` (dynamic, server-rendered)
+## Changes
+- Added `ChartToolbar` import to `GameClient.tsx`
+- Replaced single `glass-card` div with flex container layout
+- Added `ChartToolbar` component with proper props:
+  - `activeTool`: Connected to existing state
+  - `onSelectTool`: Connected to `setActiveTool`
+  - `onDelete`: Placeholder callback
+  - `onIndicatorChange`: Increments `indicatorVersion` state
+
+## Build Verification
+✅ `npm run build` completed successfully with no errors or warnings
+
+## Test Summary
+All TypeScript types check out; build compiles without issues.
+
+## Concerns
+None. The implementation follows the existing code patterns and integrates cleanly with the existing state management.
+
+---
+
+## Review Fix: Reset active tool on round change
+
+### Commit
+- `94eebb0` - fix: reset active tool to crosshair on round change
+
+### Change
+Added `setActiveTool("crosshair");` in `handleNext` after `setRoundKey(k => k + 1)` to reset the drawing tool when advancing to the next round.
+
+### Test Summary
+Build passes (`npm run build` — compiled successfully, no type errors).

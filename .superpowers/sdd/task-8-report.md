@@ -1,16 +1,18 @@
-# Task 8: UserMenu Component
+# Task 8 Report
 
-## Summary
-Created `src/components/UserMenu.tsx` — a header dropdown for authenticated users.
+**Status:** DONE
 
-## Implementation
-- **Auth check on mount**: Uses `getUser()` and `getProfile()` to load the user profile
-- **Unauthenticated state**: Shows a "Log in" link (`btn-ghost` class) pointing to `/login`
-- **Authenticated state**: Shows a clickable avatar circle (image from `avatar_url` or first-letter gradient fallback)
-- **Dropdown**: Toggles on click, uses `.glass-card` for styling, shows username, email, and "Log out" button
-- **Sign out**: Calls `signOut()`, closes dropdown, refreshes page
-- **Click-outside**: Uses `mousedown` listener to close dropdown when clicking outside
-- **Cleanup**: All async work is guarded by a `cancelled` flag to prevent state updates on unmounted components
+**What was done:**
+- Added keyboard listener for Delete/Backspace key in PuzzleChart.tsx chart creation useEffect
+- Implemented delete selected drawing using existing API: `getSelectedDrawing()` and `removeDrawing(id)`
+- Updated cleanup function to remove the keydown listener
+- Verified build passes
 
-## Verification
-`npm run build` passes with no TypeScript or compilation errors.
+**Test results:**
+- `npm run build` succeeded (Next.js production build, type checking passed)
+
+**Commits:**
+- `3e55fed` feat: add Delete key support for removing selected drawings
+
+**Concerns:**
+- Task brief specified `drawingManagerRef.current?.deleteSelected()` but this method does not exist in the `DrawingManager` class (v0.1.1). Used `getSelectedDrawing()` + `removeDrawing(id)` instead. The behavior is identical.
