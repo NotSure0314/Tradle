@@ -7,6 +7,7 @@ import PuzzleChart from "./PuzzleChart";
 import PredictionInput from "./PredictionInput";
 import RoundResult from "./RoundResult";
 import GameOver from "./GameOver";
+import type { DrawingTool } from "./ChartToolbar";
 
 type State = "loading" | "predicting" | "submitting" | "revealing" | "done";
 
@@ -18,6 +19,9 @@ export default function GameClient() {
   const [prediction, setPrediction] = useState<number | null>(null);
   const [results, setResults] = useState<RoundResultType[]>([]);
   const [error, setError] = useState("");
+  const [roundKey, setRoundKey] = useState(0);
+  const [activeTool, setActiveTool] = useState<DrawingTool>("crosshair");
+  const [indicatorVersion, setIndicatorVersion] = useState(0);
 
   const loadDailySet = useCallback(async () => {
     setState("loading");
@@ -91,6 +95,7 @@ export default function GameClient() {
     setRoundIndex(nextRound);
     setPuzzle(dailySet.puzzles[nextRound]!);
     setPrediction(null);
+    setRoundKey((k) => k + 1);
     setState("predicting");
   }, [roundIndex, dailySet]);
 
@@ -156,6 +161,9 @@ export default function GameClient() {
           candles={puzzle.visibleCandles}
           prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
           actual={state === "revealing" ? currentResult?.actualClose : undefined}
+          roundKey={roundKey}
+          activeTool={activeTool}
+          indicatorVersion={indicatorVersion}
         />
       </div>
 

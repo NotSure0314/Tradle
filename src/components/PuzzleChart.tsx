@@ -1,3 +1,4 @@
+// src/components/PuzzleChart.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -5,29 +6,45 @@ import {
   createChart,
   CandlestickSeries,
   LineSeries,
+  HistogramSeries,
   ColorType,
   LineStyle,
   type IChartApi,
   type ISeriesApi,
   type CandlestickData,
   type LineData,
+  type HistogramData,
 } from "lightweight-charts";
+import { DrawingManager } from "lightweight-charts-drawing";
 import type { Candle } from "@/lib/types";
+import type { DrawingTool } from "@/components/ChartToolbar";
+import { getIndicators } from "@/lib/indicatorStore";
+import { calcSMA, calcEMA, calcBollingerBands, calcVolume } from "@/lib/indicators";
 
 type Props = {
   candles: Candle[];
   prediction?: number;
   actual?: number;
   height?: number;
+  roundKey: number;
+  activeTool: DrawingTool;
+  indicatorVersion: number;
 };
 
-export default function PuzzleChart({ candles, prediction, actual, height = 500 }: Props) {
+const ACCENT = "#8b5cf6";
+
+export default function PuzzleChart({
+  candles, prediction, actual, height = 500, roundKey, activeTool, indicatorVersion,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const predRef = useRef<ISeriesApi<"Line"> | null>(null);
   const actualRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const drawingManagerRef = useRef<DrawingManager | null>(null);
+  const indicatorSeriesRef = useRef<ISeriesApi<any>[]>([]);
 
+  // Create chart
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -66,8 +83,12 @@ export default function PuzzleChart({ candles, prediction, actual, height = 500 
       wickDownColor: "#f87171",
     });
 
+    const drawingManager = new DrawingManager();
+    drawingManager.attach(chart, series, containerRef.current);
+
     chartRef.current = chart;
     candleRef.current = series;
+    drawingManagerRef.current = drawingManager;
 
     const handleResize = () => {
       if (containerRef.current) {
@@ -78,14 +99,20 @@ export default function PuzzleChart({ candles, prediction, actual, height = 500 
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      indicatorSeriesRef.current.forEach((s) => {
+        try { chart.removeSeries(s); } catch {}
+      });
+      indicatorSeriesRef.current = [];
       chart.remove();
       chartRef.current = null;
       candleRef.current = null;
       predRef.current = null;
       actualRef.current = null;
+      drawingManagerRef.current = null;
     };
   }, [height]);
 
+  // Set candle data
   useEffect(() => {
     const series = candleRef.current;
     if (!series) return;
@@ -103,22 +130,98 @@ export default function PuzzleChart({ candles, prediction, actual, height = 500 
     chartRef.current?.timeScale().fitContent();
   }, [candles]);
 
+  // Clear drawings on round change
+  useEffect(() => {
+    drawingManagerRef.current?.clearAll();
+  }, [roundKey]);
+
+  // Handle active tool changes
+  useEffect(() => {
+    const dm = drawingManagerRef.current;
+    if (!dm) return;
+    if (activeTool === "crosshair") {
+      dm.setActiveTool(null);
+    } else if (activeTool === "trendline") {
+      dm.setActiveTool("trend-line");
+    }
+    // Other tools will be wired as we add them
+  }, [activeTool]);
+
+  // Render indicators
+  useEffect(() => {
+    const chart = chartRef.current;
+    const series = candleRef.current;
+    if (!chart || !series) return;
+
+    // Remove old indicator series
+    indicatorSeriesRef.current.forEach((s) => {
+      try { chart.removeSeries(s); } catch {}
+    });
+    indicatorSeriesRef.current = [];
+
+    const indicators = getIndicators();
+
+    // Overlay indicators on main chart
+    if (indicators.sma20) {
+      const data = calcSMA(candles, 20);
+      const s = chart.addSeries(LineSeries, { color: "#3b82f6", lineWidth: 1, title: "SMA 20", priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as LineData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+    if (indicators.sma50) {
+      const data = calcSMA(candles, 50);
+      const s = chart.addSeries(LineSeries, { color: "#f59e0b", lineWidth: 1, title: "SMA 50", priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as LineData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+    if (indicators.sma200) {
+      const data = calcSMA(candles, 200);
+      const s = chart.addSeries(LineSeries, { color: "#ef4444", lineWidth: 1, title: "SMA 200", priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as LineData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+    if (indicators.ema12) {
+      const data = calcEMA(candles, 12);
+      const s = chart.addSeries(LineSeries, { color: "#06b6d4", lineWidth: 1, title: "EMA 12", priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as LineData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+    if (indicators.ema26) {
+      const data = calcEMA(candles, 26);
+      const s = chart.addSeries(LineSeries, { color: "#8b5cf6", lineWidth: 1, title: "EMA 26", priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as LineData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+    if (indicators.bb) {
+      const bb = calcBollingerBands(candles);
+      const upper = chart.addSeries(LineSeries, { color: "rgba(168,85,247,0.4)", lineWidth: 1, lineStyle: LineStyle.Dotted, priceLineVisible: false, lastValueVisible: false });
+      const mid = chart.addSeries(LineSeries, { color: "rgba(168,85,247,0.7)", lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
+      const lower = chart.addSeries(LineSeries, { color: "rgba(168,85,247,0.4)", lineWidth: 1, lineStyle: LineStyle.Dotted, priceLineVisible: false, lastValueVisible: false });
+      upper.setData(bb.upper as LineData[]);
+      mid.setData(bb.middle as LineData[]);
+      lower.setData(bb.lower as LineData[]);
+      indicatorSeriesRef.current.push(upper, mid, lower);
+    }
+    if (indicators.volume) {
+      const data = calcVolume(candles);
+      const s = chart.addSeries(HistogramSeries, { priceLineVisible: false, lastValueVisible: false });
+      s.setData(data as HistogramData[]);
+      indicatorSeriesRef.current.push(s);
+    }
+  }, [candles, indicatorVersion]);
+
+  // Prediction line
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
-
     if (predRef.current) {
       chart.removeSeries(predRef.current);
       predRef.current = null;
     }
-
     if (prediction != null && candles.length > 0) {
       const lastTime = candles[candles.length - 1]!.time;
       const line = chart.addSeries(LineSeries, {
-        color: "#a78bfa",
-        lineWidth: 2,
-        lineStyle: LineStyle.Dashed,
-        title: "Your Prediction",
+        color: ACCENT, lineWidth: 2, lineStyle: LineStyle.Dashed, title: "Your Prediction",
       });
       const data: LineData[] = [
         { time: lastTime as any, value: prediction },
@@ -132,21 +235,18 @@ export default function PuzzleChart({ candles, prediction, actual, height = 500 
     }
   }, [prediction, candles, actual]);
 
+  // Actual close line
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
-
     if (actualRef.current) {
       chart.removeSeries(actualRef.current);
       actualRef.current = null;
     }
-
     if (actual != null && candles.length > 0) {
       const lastTime = candles[candles.length - 1]!.time;
       const line = chart.addSeries(LineSeries, {
-        color: "#fafafa",
-        lineWidth: 2,
-        title: "Actual Close",
+        color: "#fafafa", lineWidth: 2, title: "Actual Close",
       });
       line.setData([
         { time: lastTime as any, value: actual },
