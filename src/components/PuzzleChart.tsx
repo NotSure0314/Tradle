@@ -164,17 +164,12 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
   // Handle active tool changes
   useEffect(() => {
     const dm = drawingManagerRef.current;
-    const chart = chartRef.current;
-    if (!dm || !chart) return;
-
+    if (!dm) return;
     if (activeTool === "crosshair") {
       dm.setActiveTool(null);
-      chart.applyOptions({ crosshair: { mode: 0 } });
     } else if (activeTool === "trendline") {
       dm.setActiveTool("trend-line");
-      chart.applyOptions({ crosshair: { mode: 1 } });
     }
-    // Other tools will be wired as we add them
   }, [activeTool]);
 
   // Render indicators

@@ -57,4 +57,13 @@ export function saveGuestScore(score: number, date: string): void {
   }
   scores.push({ score, date });
   localStorage.setItem("guest-scores", JSON.stringify(scores));
+
+  // Also save to Supabase so it shows on leaderboard
+  supabase.from("scores").insert({
+    score,
+    date,
+    user_id: null,
+  }).then(({ error }) => {
+    if (error) console.error("saveGuestScore to Supabase error:", error);
+  });
 }
