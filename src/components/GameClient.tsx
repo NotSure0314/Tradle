@@ -167,16 +167,23 @@ export default function GameClient() {
           onDelete={() => chartRef.current?.deleteSelected()}
           onIndicatorChange={() => setIndicatorVersion((v) => v + 1)}
         />
-        <div className="glass-card p-1 sm:p-1.5 flex-1">
-          <PuzzleChart
-            ref={chartRef}
-            candles={puzzle.visibleCandles}
-            prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
-            actual={state === "revealing" ? currentResult?.actualClose : undefined}
-            roundKey={roundKey}
-            activeTool={activeTool}
-            indicatorVersion={indicatorVersion}
-          />
+        <div className="flex-1">
+          <div className="flex justify-end mb-1">
+            <span className="px-2 py-0.5 text-xs rounded bg-white/[0.06] text-zinc-400">
+              1D
+            </span>
+          </div>
+          <div className="glass-card p-1 sm:p-1.5">
+            <PuzzleChart
+              ref={chartRef}
+              candles={puzzle.visibleCandles}
+              prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
+              actual={state === "revealing" ? currentResult?.actualClose : undefined}
+              roundKey={roundKey}
+              activeTool={activeTool}
+              indicatorVersion={indicatorVersion}
+            />
+          </div>
         </div>
       </div>
 
