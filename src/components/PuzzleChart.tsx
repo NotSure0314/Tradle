@@ -100,6 +100,7 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
 
     const drawingManager = new DrawingManager();
     drawingManager.attach(chart, series, containerRef.current);
+    console.log("DrawingManager attached:", drawingManager.isAttached());
 
     chartRef.current = chart;
     candleRef.current = series;
@@ -165,11 +166,13 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
   useEffect(() => {
     const dm = drawingManagerRef.current;
     if (!dm) return;
+    console.log("Setting active tool:", activeTool, "isAttached:", dm.isAttached());
     if (activeTool === "crosshair") {
       dm.setActiveTool(null);
     } else if (activeTool === "trendline") {
       dm.setActiveTool("trend-line");
     }
+    console.log("Active tool after set:", dm.getActiveTool());
   }, [activeTool]);
 
   // Render indicators

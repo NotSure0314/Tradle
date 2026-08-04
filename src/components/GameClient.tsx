@@ -168,10 +168,7 @@ export default function GameClient() {
           onIndicatorChange={() => setIndicatorVersion((v) => v + 1)}
         />
         <div className="flex-1">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-white">
-              {puzzle.ticker}
-            </span>
+          <div className="flex justify-end mb-2">
             <span className="px-3 py-1 text-sm font-medium rounded-md bg-violet-500/20 text-violet-400 border border-violet-500/30">
               1D
             </span>
