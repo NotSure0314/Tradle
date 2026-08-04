@@ -97,6 +97,7 @@ export default function GameClient() {
     setPuzzle(dailySet.puzzles[nextRound]!);
     setPrediction(null);
     setRoundKey((k) => k + 1);
+    setActiveTool("crosshair");
     setState("predicting");
   }, [roundIndex, dailySet]);
 
