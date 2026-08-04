@@ -14,8 +14,9 @@ import {
   type CandlestickData,
   type LineData,
   type HistogramData,
+  type MouseEventParams,
 } from "lightweight-charts";
-import { DrawingManager } from "lightweight-charts-drawing";
+import { DrawingManager, TrendLine } from "lightweight-charts-drawing";
 import type { Candle } from "@/lib/types";
 import type { DrawingTool } from "@/components/ChartToolbar";
 import { getIndicators } from "@/lib/indicatorStore";
@@ -47,6 +48,12 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
   const actualRef = useRef<ISeriesApi<"Line"> | null>(null);
   const drawingManagerRef = useRef<DrawingManager | null>(null);
   const indicatorSeriesRef = useRef<ISeriesApi<any>[]>([]);
+  const activeToolRef = useRef<DrawingTool>("crosshair");
+  const pendingAnchorRef = useRef<{ time: any; price: number } | null>(null);
+
+  useEffect(() => {
+    activeToolRef.current = activeTool;
+  }, [activeTool]);
 
   useImperativeHandle(ref, () => ({
     deleteSelected() {
@@ -59,7 +66,6 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
     },
   }));
 
-  // Create chart
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -100,11 +106,41 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
 
     const drawingManager = new DrawingManager();
     drawingManager.attach(chart, series, containerRef.current);
-    console.log("DrawingManager attached:", drawingManager.isAttached());
 
     chartRef.current = chart;
     candleRef.current = series;
     drawingManagerRef.current = drawingManager;
+
+    const handleClick = (param: MouseEventParams) => {
+      if (activeToolRef.current !== "trendline") return;
+      if (!param.point) return;
+
+      const time = param.time;
+      const seriesData = series.data();
+      if (!time || seriesData.length === 0) return;
+
+      const price = series.coordinateToPrice(param.point.y);
+      if (price === null || price === undefined) return;
+
+      const anchor = { time, price };
+
+      if (!pendingAnchorRef.current) {
+        pendingAnchorRef.current = anchor;
+        chart.applyOptions({
+          crosshair: { mode: 0 },
+        });
+      } else {
+        const tl = new TrendLine(
+          `tl-${Date.now()}`,
+          [pendingAnchorRef.current, anchor],
+          { lineColor: "#8b5cf6", lineWidth: 2 },
+        );
+        drawingManager.addDrawing(tl);
+        pendingAnchorRef.current = null;
+      }
+    };
+
+    chart.subscribeClick(handleClick);
 
     const handleResize = () => {
       if (containerRef.current) {
@@ -114,6 +150,10 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
     window.addEventListener("resize", handleResize);
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        pendingAnchorRef.current = null;
+        return;
+      }
       if (e.key === "Delete" || e.key === "Backspace") {
         const selected = drawingManagerRef.current?.getSelectedDrawing();
         if (selected) {
@@ -124,6 +164,7 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      chart.unsubscribeClick(handleClick);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("keydown", handleKeyDown);
       indicatorSeriesRef.current.forEach((s) => {
@@ -162,17 +203,15 @@ const PuzzleChart = forwardRef<PuzzleChartHandle, Props>(function PuzzleChart({
     drawingManagerRef.current?.clearAll();
   }, [roundKey]);
 
-  // Handle active tool changes
+  // Update cursor style based on active tool
   useEffect(() => {
-    const dm = drawingManagerRef.current;
-    if (!dm) return;
-    console.log("Setting active tool:", activeTool, "isAttached:", dm.isAttached());
-    if (activeTool === "crosshair") {
-      dm.setActiveTool(null);
-    } else if (activeTool === "trendline") {
-      dm.setActiveTool("trend-line");
+    const container = containerRef.current;
+    if (!container) return;
+    if (activeTool === "trendline") {
+      container.style.cursor = "crosshair";
+    } else {
+      container.style.cursor = "";
     }
-    console.log("Active tool after set:", dm.getActiveTool());
   }, [activeTool]);
 
   // Render indicators
