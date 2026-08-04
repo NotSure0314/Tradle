@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { VisiblePuzzle, RoundResult as RoundResultType, DailySetPublic } from "@/lib/types";
 import { scoreRound } from "@/lib/scoring";
 import PuzzleChart from "./PuzzleChart";
+import ChartToolbar from "./ChartToolbar";
 import PredictionInput from "./PredictionInput";
 import RoundResult from "./RoundResult";
 import GameOver from "./GameOver";
@@ -156,15 +157,23 @@ export default function GameClient() {
         </div>
       </div>
 
-      <div className="glass-card p-1 sm:p-1.5">
-        <PuzzleChart
-          candles={puzzle.visibleCandles}
-          prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
-          actual={state === "revealing" ? currentResult?.actualClose : undefined}
-          roundKey={roundKey}
+      <div className="flex gap-2">
+        <ChartToolbar
           activeTool={activeTool}
-          indicatorVersion={indicatorVersion}
+          onSelectTool={setActiveTool}
+          onDelete={() => {}}
+          onIndicatorChange={() => setIndicatorVersion((v) => v + 1)}
         />
+        <div className="glass-card p-1 sm:p-1.5 flex-1">
+          <PuzzleChart
+            candles={puzzle.visibleCandles}
+            prediction={state === "revealing" ? currentResult?.breakdown.pPred : undefined}
+            actual={state === "revealing" ? currentResult?.actualClose : undefined}
+            roundKey={roundKey}
+            activeTool={activeTool}
+            indicatorVersion={indicatorVersion}
+          />
+        </div>
       </div>
 
       {state === "predicting" && (
